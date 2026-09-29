@@ -32,7 +32,7 @@ class TemplatesController < ApplicationController
   def edit
     @template_data = Templates.serialize_for_builder(@template)
 
-    render :edit, layout: 'plain'
+    render :edit, layout: 'editor'
   end
 
   def create

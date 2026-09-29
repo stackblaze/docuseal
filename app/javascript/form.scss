@@ -4,6 +4,22 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@font-face {
+  font-family: "Geist";
+  src: url("./fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-base-100 text-base-content antialiased;
+}
+
 a[href],
 input[type='checkbox'],
 input[type='submit'],
@@ -44,23 +60,26 @@ button[disabled] .enabled, button.btn-disabled .enabled {
 }
 
 .base-textarea {
-  @apply textarea textarea-bordered bg-white rounded-3xl;
+  @apply textarea textarea-bordered bg-white rounded-[10px];
 }
 
 .btn {
   @apply no-animation;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
 }
 
 .base-input {
-  @apply input input-bordered bg-white;
+  @apply input input-bordered bg-white rounded-[10px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40;
 }
 
 .base-button {
-  @apply btn btn-neutral text-white text-base;
+  @apply btn btn-primary text-white text-[13.5px] font-medium normal-case tracking-normal h-9 min-h-9 px-4 rounded-[10px];
 }
 
 .white-button {
-  @apply btn btn-outline text-base bg-white border-2;
+  @apply btn btn-outline bg-white border border-base-300 text-[13.5px] font-medium normal-case tracking-normal h-9 min-h-9 px-3.5 rounded-[10px];
 }
 
 .base-checkbox {

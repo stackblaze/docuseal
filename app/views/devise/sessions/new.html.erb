@@ -2,6 +2,11 @@
 <div class="max-w-lg mx-auto px-2">
   <%= render 'devise/shared/select_server' if Docuseal.multitenant? %>
   <h1 class="text-4xl font-bold text-center mt-8"><%= t('sign_in') %></h1>
+  <% if Saml.forced? %>
+    <div class="form-control mt-8">
+      <%= link_to 'Sign in with SSO', saml_path, class: 'base-button' %>
+    </div>
+  <% else %>
   <%= form_for(resource, as: resource_name, html: { class: 'space-y-6' }, data: { turbo: params[:redir].blank? }, url: session_path(resource_name)) do |f| %>
     <%= render 'hidden_fields' %>
     <div class="space-y-2" dir="auto">
@@ -19,6 +24,7 @@
     </div>
   <% end %>
   <%= render 'omniauthable' %>
+  <% end %>
   <%= render 'extra_links' %>
   <%= render 'devise/shared/links' %>
 </div>

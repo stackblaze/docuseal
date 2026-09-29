@@ -1,15 +1,15 @@
 <%= form_for '', url: templates_upload_path, id: form_id = SecureRandom.uuid, method: :post, class: 'inline', html: { enctype: 'multipart/form-data' } do %>
-  <label for="upload_template" id="templates_upload_button" class="btn btn-ghost text-base">
+  <label for="upload_template" id="templates_upload_button" class="btn btn-ghost h-9 min-h-9 px-3 normal-case text-[13.5px] font-medium">
     <button type="submit" class="hidden peer"></button>
     <span class="peer-disabled:hidden">
-      <span class="flex items-center justify-center space-x-2">
-        <%= svg_icon('upload', class: 'w-6 h-6 stroke-2') %>
+      <span class="flex items-center justify-center gap-1.5">
+        <%= svg_icon('upload', class: 'w-4 h-4 stroke-2') %>
         <span class="hidden md:block"><%= t('upload') %></span>
       </span>
     </span>
     <span class="peer-enabled:hidden">
-      <span class="flex items-center justify-center space-x-2">
-        <%= local_assigns[:icon_disabled] || svg_icon('loader', class: 'w-5 h-5 animate-spin') %>
+      <span class="flex items-center justify-center gap-1.5">
+        <%= local_assigns[:icon_disabled] || svg_icon('loader', class: 'w-4 h-4 animate-spin') %>
         <span class="hidden md:block"><%= t('upload') %>...</span>
       </span>
     </span>

@@ -42,7 +42,7 @@ class TemplatesDebugController < ApplicationController
         )
       ).to_json
 
-    render 'templates/edit', layout: 'plain'
+    render 'templates/edit', layout: 'editor'
   end
 
   def debug_file

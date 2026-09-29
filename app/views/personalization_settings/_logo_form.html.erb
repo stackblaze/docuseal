@@ -1,1 +1,29 @@
-<%= render 'logo_placeholder' %>
+<% if current_account.logo.attached? %>
+  <div class="flex items-center gap-4 mb-4">
+    <%= image_tag current_account.logo, alt: current_account.name, class: 'h-12 w-auto max-w-[12rem] object-contain' %>
+    <%= button_to t('remove'), settings_account_logo_path, method: :delete, class: 'white-button' %>
+  </div>
+<% end %>
+<%= form_with url: settings_account_logo_path, method: :post, multipart: true, html: { class: 'space-y-4' } do %>
+  <div class="form-control">
+    <span class="label"><%= t('company_logo') %></span>
+    <div class="logo-upload">
+      <%= file_field_tag :logo,
+                          id: 'account_logo',
+                          accept: 'image/png,image/jpeg,image/webp,image/gif,image/svg+xml',
+                          required: !current_account.logo.attached?,
+                          class: 'logo-upload-input' %>
+      <label for="account_logo" class="logo-upload-button">
+        <%= svg_icon('upload', class: 'w-4 h-4') %>
+        <span><%= t('upload_logo') %></span>
+      </label>
+      <span id="account_logo_filename" class="logo-upload-name"></span>
+    </div>
+  </div>
+  <p class="text-[13px] text-base-content/70">
+    <%= t('display_your_company_name_and_logo_when_signing_documents') %>
+  </p>
+  <div class="form-control">
+    <%= button_tag button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
+  </div>
+<% end %>

@@ -34,5 +34,19 @@ class SendSubmitterInvitationEmailJob
 
     submitter.sent_at ||= Time.current
     submitter.save!
+
+    schedule_reminders(submitter)
+  end
+
+  def schedule_reminders(submitter)
+    config = AccountConfigs.find_for_account(submitter.account, AccountConfig::SUBMITTER_REMINDERS)&.value
+    return unless config.is_a?(Hash)
+
+    %w[first_duration second_duration third_duration].each do |key|
+      interval = AccountConfigs::REMINDER_INTERVALS[config[key]]
+      next unless interval
+
+      SendSubmitterReminderEmailJob.perform_in(interval, 'submitter_id' => submitter.id, 'duration_key' => key)
+    end
   end
 end

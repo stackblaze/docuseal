@@ -1,4 +1,4 @@
-<%= form_for '', url: templates_upload_path, id: form_id = SecureRandom.uuid, method: :post, class: 'mt-8 block', html: { enctype: 'multipart/form-data' } do %>
+<%= form_for '', url: templates_upload_path, id: form_id = SecureRandom.uuid, method: :post, class: 'mt-2 mb-6 block', html: { enctype: 'multipart/form-data' } do %>
   <input type="hidden" name="form_id" value="<%= form_id %>">
   <button type="submit" class="hidden"></button>
   <file-dropzone data-submit-on-upload="true" class="w-full">

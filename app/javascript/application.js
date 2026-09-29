@@ -74,6 +74,14 @@ document.addEventListener('keyup', (e) => {
   }
 })
 
+document.addEventListener('change', (event) => {
+  if (event.target?.id !== 'account_logo') return
+
+  const name = document.getElementById('account_logo_filename')
+
+  if (name) name.textContent = event.target.files?.[0]?.name || ''
+})
+
 document.addEventListener('turbo:before-fetch-request', encodeMethodIntoRequestBody)
 document.addEventListener('turbo:before-fetch-request', (event) => {
   event.detail.fetchOptions.headers['X-Turbo'] = 'true'

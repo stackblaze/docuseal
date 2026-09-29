@@ -240,7 +240,7 @@
   <div
     v-if="!isShowVariables && editable && !onlyDefinedFields && (!showCustomTab || (!customFields.length && !newCustomField)) && (!withCustomFieldsTab || !showCustomTab)"
     id="field-types-grid"
-    class="grid grid-cols-3 gap-1 pb-2 fields-grid"
+    class="grid grid-cols-3 gap-1.5 pb-2 fields-grid"
   >
     <template
       v-for="(icon, type) in fieldIconsSorted"
@@ -250,22 +250,22 @@
         v-if="fieldTypes.includes(type) || ((withPhone || type != 'phone') && (withPayment || type != 'payment') && (withVerification || type != 'verification') && (withKba || type != 'kba'))"
         :id="`${type}_type_field_button`"
         draggable="true"
-        class="field-type-button group flex items-center justify-center border border-dashed w-full rounded relative fields-grid-item"
-        :style="{ backgroundColor }"
-        :class="drawFieldType === type ? 'border-base-content/40' : 'border-base-300 hover:border-base-content/20'"
+        class="field-type-button group flex items-center justify-center border bg-white w-full rounded-[10px] relative fields-grid-item"
+        :class="drawFieldType === type ? 'border-primary bg-[#f1f8ee] text-[#17540f]' : 'border-base-300 hover:border-primary/40 hover:bg-[#f1f8ee]'"
         @dragstart="onDragstart($event, { type: type })"
         @dragend="$emit('drag-end')"
         @click="['file', 'payment', 'verification', 'kba'].includes(type) ? $emit('add-field', type) : $emit('set-draw-type', type)"
       >
-        <div
-          class="flex items-console transition-all cursor-grab h-full absolute left-0"
-          :class="drawFieldType === type ? 'bg-base-200/50' : 'group-hover:bg-base-200/50'"
-        >
+        <div class="flex items-center cursor-grab h-full absolute left-0 opacity-0 group-hover:opacity-70">
           <IconDrag class="my-auto" />
         </div>
-        <div class="flex items-center flex-col px-2 py-2">
-          <component :is="icon" />
-          <span class="text-xs mt-1">
+        <div class="flex items-center flex-col px-1 py-1.5">
+          <component
+            :is="icon"
+            :width="18"
+            :stroke-width="1.6"
+          />
+          <span class="text-[11px] mt-1 leading-none">
             {{ fieldNames[type] }}
           </span>
         </div>
@@ -279,19 +279,22 @@
         <a
           href="https://www.docuseal.com/pricing"
           target="_blank"
-          class="opacity-50 flex items-center justify-center border border-dashed border-base-300 w-full rounded relative fields-grid-item"
-          :style="{ backgroundColor }"
+          class="opacity-50 flex items-center justify-center border border-base-300 bg-white w-full rounded-[10px] relative fields-grid-item"
         >
           <div class="w-0 absolute left-0">
             <IconLock
-              width="18"
-              height="18"
+              width="14"
+              height="14"
               stroke-width="1.5"
             />
           </div>
-          <div class="flex items-center flex-col px-2 py-2">
-            <component :is="icon" />
-            <span class="text-xs mt-1">
+          <div class="flex items-center flex-col px-1 py-1.5">
+            <component
+              :is="icon"
+              :width="18"
+              :stroke-width="1.6"
+            />
+            <span class="text-[11px] mt-1 leading-none">
               {{ fieldNames[type] }}
             </span>
           </div>
@@ -305,19 +308,22 @@
         <a
           href="https://www.docuseal.com/qualified-electronic-signature"
           target="_blank"
-          class="opacity-50 flex items-center justify-center border border-dashed border-base-300 w-full rounded relative fields-grid-item"
-          :style="{ backgroundColor }"
+          class="opacity-50 flex items-center justify-center border border-base-300 bg-white w-full rounded-[10px] relative fields-grid-item"
         >
           <div class="w-0 absolute left-0">
             <IconLock
-              width="18"
-              height="18"
+              width="14"
+              height="14"
               stroke-width="1.5"
             />
           </div>
-          <div class="flex items-center flex-col px-2 py-2">
-            <component :is="icon" />
-            <span class="text-xs mt-1">
+          <div class="flex items-center flex-col px-1 py-1.5">
+            <component
+              :is="icon"
+              :width="18"
+              :stroke-width="1.6"
+            />
+            <span class="text-[11px] mt-1 leading-none">
               {{ fieldNames[type] }}
             </span>
           </div>
@@ -327,7 +333,7 @@
   </div>
   <div
     v-if="!isShowVariables && fields.length < 4 && editable && withHelp && !showTourStartForm"
-    class="text-xs p-2 border border-base-200 rounded"
+    class="text-[12px] leading-snug text-base-content/60 px-1 pt-1"
   >
     <ul class="list-disc list-outside ml-3">
       <li>
@@ -346,7 +352,7 @@
     class="my-2"
   >
     <button
-      class="btn w-full"
+      class="white-button w-full mt-2"
       :class="{ 'bg-base-300': fieldPagesLoaded !== null }"
       @click="fieldPagesLoaded !== null ? null : detectFields()"
     >

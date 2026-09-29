@@ -1,0 +1,36 @@
+<div class="flex flex-wrap space-y-4 md:flex-nowrap md:space-y-0">
+  <%= render 'shared/settings_nav' %>
+  <div class="flex-grow max-w-xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold mb-4"><%= t('console') %></h1>
+    <div class="bg-base-200 rounded-[10px] px-4 py-3 space-y-3 text-sm">
+      <div class="flex items-center justify-between gap-4">
+        <span>App URL</span>
+        <span class="font-medium text-right break-all"><%= @app_url %></span>
+      </div>
+      <div class="flex items-center justify-between gap-4">
+        <span>Version</span>
+        <span class="font-medium"><%= @version %></span>
+      </div>
+      <div class="flex items-center justify-between gap-4">
+        <span>Account</span>
+        <span class="font-medium"><%= current_account.name %></span>
+      </div>
+      <div class="flex items-center justify-between gap-4">
+        <span>Users</span>
+        <span class="font-medium"><%= current_account.active_users.count %></span>
+      </div>
+      <div class="flex items-center justify-between gap-4">
+        <span>SSO</span>
+        <span class="font-medium"><%= Saml.configured?(current_account) ? 'Configured' : 'Not configured' %></span>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <%= link_to 'SSO', settings_sso_index_path, class: 'white-button' %>
+      <%= link_to 'API', settings_api_index_path, class: 'white-button' %>
+      <% if current_user.sidekiq? %>
+        <%= link_to 'Background jobs', '/jobs', class: 'white-button', data: { turbo: false } %>
+      <% end %>
+    </div>
+  </div>
+  <div class="w-0 md:w-52"></div>
+</div>

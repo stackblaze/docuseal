@@ -35,6 +35,7 @@ gem 'rails-i18n'
 gem 'rotp'
 gem 'rouge', require: false
 gem 'rqrcode', require: false
+gem 'ruby-saml', require: false
 gem 'ruby-vips'
 gem 'rubyzip', require: false
 gem 'shakapacker'

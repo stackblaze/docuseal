@@ -108,7 +108,7 @@
       v-else
       ref="label"
       tabindex="0"
-      class="group cursor-pointer group/contenteditable-container rounded-md p-2 border border-base-300 hover:border-content w-full flex justify-between items-center"
+      class="group cursor-pointer group/contenteditable-container rounded-[10px] px-2.5 py-1.5 text-sm border border-base-300 hover:border-primary/40 w-full flex justify-between items-center bg-white"
     >
       <div class="flex items-center space-x-2">
         <span

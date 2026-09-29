@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html data-theme="docuseal" lang="<%= I18n.locale %>">
+  <head>
+    <%= render 'layouts/head_tags' %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%= csrf_meta_tags %>
+    <% if ENV['ROLLBAR_CLIENT_TOKEN'] %>
+      <meta name="rollbar-token" content="<%= ENV.fetch('ROLLBAR_CLIENT_TOKEN', nil) %>">
+      <%= javascript_pack_tag 'rollbar', 'application', defer: true %>
+    <% else %>
+      <%= javascript_pack_tag 'application', defer: true %>
+    <% end %>
+    <%= stylesheet_pack_tag 'application', media: 'all' %>
+  </head>
+  <body class="bg-base-100 text-base-content antialiased">
+    <% if signed_in? %>
+      <input type="checkbox" id="app-sidebar-open" class="hidden" />
+      <input type="checkbox" id="app-sidebar-collapsed" class="hidden" checked />
+      <label for="app-sidebar-open" class="app-sidebar-scrim" aria-hidden="true"></label>
+      <script>
+        (function () {
+          var box = document.getElementById('app-sidebar-collapsed');
+          if (!box) return;
+          try { box.checked = localStorage.getItem('docuseal-sidebar-collapsed') !== '0'; } catch (e) {}
+          box.addEventListener('change', function () {
+            try { localStorage.setItem('docuseal-sidebar-collapsed', box.checked ? '1' : '0'); } catch (e) {}
+          });
+        })();
+      </script>
+      <aside class="app-sidebar">
+        <%= render 'shared/sidebar' %>
+      </aside>
+      <label for="app-sidebar-open" class="app-sidebar-menu-btn btn btn-ghost btn-sm btn-square fixed left-2 top-2 z-20 h-8 min-h-8 w-8 border border-base-300 bg-base-100" aria-label="Open navigation">
+        <%= svg_icon('list', class: 'w-4 h-4') %>
+      </label>
+      <div class="app-shell-main">
+        <% if flash.present? %><%= render 'shared/flash' %><% end %>
+        <%= yield %>
+      </div>
+    <% else %>
+      <% if flash.present? %><%= render 'shared/flash' %><% end %>
+      <%= yield %>
+    <% end %>
+    <turbo-frame id="modal"></turbo-frame>
+  </body>
+</html>

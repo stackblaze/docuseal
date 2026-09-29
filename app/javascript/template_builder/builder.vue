@@ -78,7 +78,7 @@
     <div
       v-if="$slots.buttons || withTitle"
       id="title_container"
-      class="flex justify-between py-1.5 items-center pr-4 top-0 z-10 title-container"
+      class="flex justify-between py-2.5 items-center pr-4 pl-1 top-0 z-10 title-container bg-white border-b border-base-300 mb-3"
       :class="{ sticky: withStickySubmitters || isBreakpointLg }"
       :style="{ backgroundColor }"
     >
@@ -93,7 +93,7 @@
           v-if="withTitle"
           :model-value="template.name"
           :editable="editable"
-          class="text-xl md:text-3xl font-semibold focus:text-clip template-name"
+          class="text-xl font-semibold focus:text-clip template-name"
           :icon-stroke-width="2.3"
           @update:model-value="updateName"
         />
@@ -106,7 +106,6 @@
         <template v-else>
           <form
             v-if="withSignYourselfButton && undefinedSubmitters.length < 2 && (!template.variables_schema || Object.keys(template.variables_schema).length === 0)"
-            target="_blank"
             data-turbo="false"
             class="inline"
             method="post"
@@ -126,11 +125,11 @@
               autocomplete="off"
             >
             <button
-              class="btn btn-primary btn-ghost text-base hidden md:flex"
+              class="white-button hidden md:flex"
               type="submit"
             >
               <IconWritingSign
-                width="22"
+                width="16"
                 class="inline"
               />
               <span class="hidden md:inline">
@@ -142,12 +141,12 @@
             v-else-if="withSignYourselfButton"
             id="sign_yourself_button"
             :href="`/templates/${template.id}/submissions/new?selfsign=true`"
-            class="btn btn-primary btn-ghost text-base hidden md:flex"
+            class="white-button hidden md:flex"
             data-turbo-frame="modal"
             @click="maybeShowErrorTemplateAlert"
           >
             <IconWritingSign
-              width="22"
+              width="16"
               class="inline"
             />
             <span class="hidden md:inline">
@@ -163,7 +162,7 @@
             @click="maybeShowErrorTemplateAlert"
           >
             <IconUsersPlus
-              width="20"
+              width="16"
               class="inline"
             />
             <span class="hidden md:inline">

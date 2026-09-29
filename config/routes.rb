@@ -75,6 +75,9 @@ Rails.application.routes.draw do
     resources :resend_email, only: %i[create], controller: 'submissions_resend_email'
   end
   resources :submitters, only: %i[edit update]
+  match '/sso/saml', to: 'saml#consume', via: %i[get post], as: :saml
+  get '/sso/saml/metadata', to: 'saml#metadata', as: :saml_metadata
+
   resources :console_redirect, only: %i[index]
   resources :upgrade, only: %i[index], controller: 'console_redirect'
   resources :manage, only: %i[index], controller: 'console_redirect'
@@ -196,7 +199,8 @@ Rails.application.routes.draw do
       resource :reveal_access_token, only: %i[show create], controller: 'reveal_access_token'
     end
     resources :email, only: %i[index create destroy], controller: 'email_smtp_settings'
-    resources :sso, only: %i[index], controller: 'sso_settings'
+    resources :sso, only: %i[index create], controller: 'sso_settings'
+    resources :console, only: %i[index], controller: 'console_settings'
     resources :notifications, only: %i[index create], controller: 'notifications_settings'
     resource :esign, only: %i[show create new update destroy], controller: 'esign_settings'
     resources :users, only: %i[index]
@@ -205,6 +209,7 @@ Rails.application.routes.draw do
     resources :integration_users, only: %i[index], path: 'users/:status', controller: 'users',
                                   defaults: { status: :integration }
     resource :personalization, only: %i[show create], controller: 'personalization_settings'
+    resource :account_logo, only: %i[create destroy], controller: 'account_logos'
     resources :webhooks, only: %i[index show new create update destroy], controller: 'webhook_settings' do
       post :resend
 

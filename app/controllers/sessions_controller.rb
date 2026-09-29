@@ -6,6 +6,11 @@ class SessionsController < Devise::SessionsController
   around_action :with_browser_locale
 
   def create
+    if Saml.forced?
+      redirect_to saml_path, alert: I18n.t('force_sso_disable_login_with_email_and_password')
+      return
+    end
+
     email = sign_in_params[:email].to_s.downcase
 
     if Docuseal.multitenant? && !User.exists?(email:)

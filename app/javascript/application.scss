@@ -4,6 +4,320 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@font-face {
+  font-family: "Geist";
+  src: url("./fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("./fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-base-100 text-base-content antialiased;
+}
+
+/* OpenBooks-style app shell */
+.app-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 40;
+  display: flex;
+  width: 232px;
+  flex-direction: column;
+  border-right: 1px solid hsl(var(--b3));
+  background: #fafafa;
+  transform: translateX(-100%);
+  transition: transform 150ms ease-out;
+}
+
+.app-sidebar-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  background: rgb(0 0 0 / 0.3);
+}
+
+.app-shell-main {
+  min-height: 100vh;
+}
+
+#app-sidebar-open:checked ~ .app-sidebar {
+  transform: translateX(0);
+}
+
+#app-sidebar-open:checked ~ .app-sidebar-scrim {
+  display: block;
+}
+
+.sidebar-collapse-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+  background: #fff;
+  color: #252525;
+  cursor: pointer;
+}
+
+.sidebar-collapse-btn:hover {
+  border-color: #2ca01c;
+  background: #f1f8ee;
+  color: #17540f;
+}
+
+.when-collapsed {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .app-sidebar {
+    transform: translateX(0);
+    width: 232px;
+    transition: width 150ms ease-out;
+  }
+
+  .app-shell-main {
+    padding-left: 232px;
+    transition: padding-left 150ms ease-out;
+  }
+
+  .app-sidebar-menu-btn,
+  .app-sidebar-close-btn,
+  .app-sidebar-scrim {
+    display: none !important;
+  }
+
+  .sidebar-collapse-btn {
+    display: inline-flex;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar {
+    width: 72px;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-shell-main {
+    padding-left: 72px;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar .sidebar-label,
+  #app-sidebar-collapsed:checked ~ .app-sidebar .sidebar-brand-text {
+    display: none;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar .sidebar-header,
+  #app-sidebar-collapsed:checked ~ .app-sidebar .sidebar-user {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar .sidebar-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar .app-nav-link {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar .when-expanded {
+    display: none;
+  }
+
+  #app-sidebar-collapsed:checked ~ .app-sidebar .when-collapsed {
+    display: inline-flex;
+  }
+}
+
+.settings-nav ~ * h1 {
+  font-size: 1.25rem !important;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.settings-nav ~ * :is(h2, p).text-2xl,
+.settings-nav ~ * :is(h2, p).text-3xl,
+.settings-nav ~ * :is(h2, p).text-4xl,
+.settings-nav ~ * h2 {
+  font-size: 1.05rem !important;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.settings-nav ~ * .label {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 13px;
+}
+
+.settings-nav ~ * :is(.btn, .base-button, .white-button) {
+  align-self: flex-start;
+  width: auto !important;
+  height: 2rem !important;
+  min-height: 2rem !important;
+  max-height: 2rem;
+  padding: 0 0.875rem !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 10px;
+  text-transform: none;
+  gap: 0.375rem;
+}
+
+.settings-nav ~ * :is(.btn, .base-button, .white-button) svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.settings-nav .toggle,
+.settings-nav ~ * .toggle {
+  --handleoffset: 0.75rem;
+  height: 1.25rem !important;
+  width: 2rem !important;
+  min-height: 1.25rem !important;
+}
+
+.settings-nav ~ * :is(.checkbox, .base-checkbox) {
+  height: 1.25rem !important;
+  width: 1.25rem !important;
+  min-height: 1.25rem !important;
+}
+
+.settings-nav .badge,
+.settings-nav ~ * .badge {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 1px 6px !important;
+  font-size: 11px !important;
+  font-weight: 600;
+  line-height: 1.45;
+  border-radius: 6px;
+}
+
+.settings-nav ~ * .collapse {
+  border-radius: 10px;
+}
+
+.settings-nav ~ * .collapse-title,
+.settings-nav ~ * .collapse > input[type="checkbox"],
+.settings-nav ~ * .collapse > input[type="radio"] {
+  min-height: 2.75rem !important;
+  padding: 0.625rem 2.25rem 0.625rem 0.875rem !important;
+}
+
+.settings-nav ~ * .collapse-title {
+  font-size: 15px !important;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.settings-nav ~ * .collapse.collapse-plus > .collapse-title:after {
+  top: 50%;
+  right: 0.9rem;
+  height: auto;
+  width: auto;
+  font-size: 1rem;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+#account_settings_menu.menu :where(li > *:not(ul):not(.menu-title)) {
+  font-size: 13.5px;
+  min-height: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+#account_settings_menu .menu-title > span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1d6b12;
+}
+
+#account_settings_menu .menu-title a {
+  text-transform: none;
+  font-size: 13px;
+  color: inherit;
+}
+
+.settings-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 2rem;
+  margin: 0 0 0.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  background: #fff;
+  color: #252525;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.settings-back:hover {
+  border-color: #2ca01c;
+  background: #f1f8ee;
+  color: #17540f;
+}
+
+#account_settings_menu a.bg-base-300 {
+  background-color: #f1f8ee !important;
+  color: #17540f;
+  font-weight: 600;
+}
+
+.toolbar-button {
+  @apply inline-flex items-center justify-center gap-1.5 h-8 min-h-8 px-3 rounded-[10px] border border-base-300 bg-white text-[13px] font-medium normal-case text-base-content hover:bg-base-200;
+}
+
+.toolbar-button.toolbar-icon {
+  width: 2rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.toolbar-button.toolbar-icon svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+.toolbar-button-primary {
+  @apply inline-flex items-center justify-center gap-1.5 h-8 min-h-8 px-3 rounded-[10px] bg-primary border border-primary text-white text-[13px] font-medium normal-case hover:bg-[#248716];
+}
+
+.app-nav-link {
+  @apply flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-[13.5px] font-medium text-base-content/70 transition-colors hover:bg-base-200;
+}
+
+.app-nav-link.is-active {
+  @apply bg-[#f1f8ee] font-semibold text-[#17540f];
+}
+
 a[href],
 input[type='checkbox'],
 input[type='submit'],
@@ -45,22 +359,76 @@ button[disabled] .enabled, button.btn-disabled .enabled {
 
 .btn {
   @apply no-animation;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
 }
 
 .base-input {
-  @apply input input-bordered bg-white;
+  @apply input input-bordered bg-white rounded-[10px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40;
 }
 
 .base-textarea {
-  @apply textarea textarea-bordered bg-white rounded-3xl;
+  @apply textarea textarea-bordered bg-white rounded-[10px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40;
 }
 
 .base-button {
-  @apply btn btn-neutral text-white text-base;
+  @apply btn btn-primary text-white text-[13.5px] font-medium normal-case tracking-normal h-9 min-h-9 px-4 rounded-[10px];
 }
 
 .white-button {
-  @apply btn btn-outline text-base bg-white border-2;
+  @apply btn btn-outline bg-white border border-base-300 text-[13.5px] font-medium normal-case tracking-normal h-9 min-h-9 px-3.5 rounded-[10px];
+}
+
+.logo-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.25rem;
+}
+
+.logo-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.logo-upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0 0.875rem;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  background: #fff;
+  color: #252525;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.logo-upload-button:hover {
+  border-color: #2ca01c;
+  background: #f1f8ee;
+  color: #17540f;
+}
+
+.logo-upload-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: rgb(37 37 37 / 0.7);
 }
 
 .base-checkbox {

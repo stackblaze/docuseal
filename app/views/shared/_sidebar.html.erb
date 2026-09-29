@@ -1,0 +1,67 @@
+<%
+  path = request.path
+  on_settings = path.start_with?('/settings')
+  on_submissions = path.start_with?('/submissions') || (path == '/' && cookies[:dashboard_view] == 'submissions')
+  on_templates = !on_settings && !on_submissions && (
+    path == '/' || path.start_with?('/templates', '/folders')
+  )
+%>
+<div class="flex h-full flex-col">
+  <div class="sidebar-header flex items-center gap-2.5 px-4 pt-4 pb-2.5">
+    <a href="<%= root_path %>" class="flex min-w-0 flex-1 items-center gap-2.5" onclick="document.getElementById('app-sidebar-open') && (document.getElementById('app-sidebar-open').checked = false)">
+      <%= render 'shared/logo', height: '30', width: '30', class: 'shrink-0' %>
+      <span class="sidebar-brand-text min-w-0 flex-1">
+        <span class="block text-sm font-semibold leading-tight">DocuSeal</span>
+        <span class="block truncate text-[11px] text-base-content/55"><%= current_account.name %></span>
+      </span>
+    </a>
+    <label for="app-sidebar-collapsed" class="sidebar-collapse-btn" aria-label="Collapse sidebar">
+      <span class="when-expanded"><%= svg_icon('chevron_left', class: 'w-4 h-4') %></span>
+      <span class="when-collapsed"><%= svg_icon('arrow_right', class: 'w-4 h-4') %></span>
+    </label>
+    <label for="app-sidebar-open" class="app-sidebar-close-btn btn btn-ghost btn-sm btn-square h-8 min-h-8 w-8" aria-label="Close navigation">
+      <%= svg_icon('x', class: 'w-4 h-4') %>
+    </label>
+  </div>
+
+  <nav class="flex flex-1 flex-col gap-px overflow-y-auto px-3 py-1">
+    <a href="<%= templates_path %>"
+       onclick="document.getElementById('app-sidebar-open') && (document.getElementById('app-sidebar-open').checked = false)"
+       class="app-nav-link <%= 'is-active' if on_templates %>">
+      <%= svg_icon('layout_grid', class: 'w-[17px] h-[17px] shrink-0 opacity-85') %>
+      <span class="sidebar-label flex-1"><%= t('templates') %></span>
+    </a>
+    <a href="<%= submissions_path %>"
+       onclick="document.getElementById('app-sidebar-open') && (document.getElementById('app-sidebar-open').checked = false)"
+       class="app-nav-link <%= 'is-active' if on_submissions %>">
+      <%= svg_icon('layout_list', class: 'w-[17px] h-[17px] shrink-0 opacity-85') %>
+      <span class="sidebar-label flex-1"><%= t('submissions') %></span>
+    </a>
+  </nav>
+
+  <div class="flex flex-col gap-1 border-t border-base-300 p-3">
+    <a href="<%= settings_profile_index_path %>"
+       id="account_settings_button"
+       onclick="document.getElementById('app-sidebar-open') && (document.getElementById('app-sidebar-open').checked = false)"
+       class="app-nav-link <%= 'is-active' if on_settings %>">
+      <%= svg_icon('settings', class: 'w-[17px] h-[17px] shrink-0 opacity-85') %>
+      <span class="sidebar-label flex-1"><%= t('settings') %></span>
+    </a>
+
+    <div class="sidebar-user flex items-center gap-2.5 rounded-lg px-2.5 py-1.5">
+      <span class="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-content">
+        <%= current_user.initials %>
+      </span>
+      <span class="sidebar-label min-w-0 flex-1">
+        <span class="block truncate text-[12.5px] font-medium leading-tight"><%= current_user.full_name.presence || current_user.email %></span>
+        <span class="block truncate text-[11px] text-base-content/55 leading-tight"><%= current_user.email %></span>
+      </span>
+    </div>
+
+    <button type="submit" form="destroy_user_session_form" class="app-nav-link w-full text-left">
+      <%= svg_icon('logout', class: 'w-[17px] h-[17px] shrink-0 opacity-85') %>
+      <span class="sidebar-label"><%= t('sign_out') %></span>
+    </button>
+    <%= button_to '', destroy_user_session_path, method: :delete, form: { id: 'destroy_user_session_form', data: { turbo: false } }, form_class: 'hidden' %>
+  </div>
+</div>

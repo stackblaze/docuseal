@@ -1,5 +1,5 @@
 <% has_archived = can?(:manage, :countless) || current_account.templates.archived.exists? %>
-<% show_dropzone = params[:q].blank? && @pagy.pages == 1 && ((@template_folders.size < 10 && @templates.size.zero?) || (@template_folders.size < 7 && @templates.size < 4) || (@template_folders.size < 4 && @templates.size < 7)) %>
+<% show_dropzone = params[:q].blank? && can?(:create, ::Template) %>
 <% if Docuseal.demo? %><%= render 'shared/demo_alert' %><% end %>
 <dashboard-dropzone>
   <%= form_for '', url: '', id: form_id = SecureRandom.uuid, method: :post, class: 'hidden', data: { target: 'dashboard-dropzone.form' }, html: { enctype: 'multipart/form-data' } do %>
@@ -8,9 +8,7 @@
     <input id="dashboard_dropzone_input" name="files[]" type="file" multiple>
   <% end %>
   <div class="group/header flex justify-between items-center w-full mb-4 relative">
-    <% unless show_dropzone %>
-      <%= render 'templates/dashboard_dropzone', style: 'height: 114px' %>
-    <% end %>
+    <%= render 'templates/dashboard_dropzone', style: 'height: 114px' %>
     <%= render 'templates/dashboard_folder_dropzone', style: 'height: 114px' %>
     <div class="flex items-center flex-grow min-w-0 max-md:group-has-[search-input:focus-within]/header:hidden <%= 'max-md:hidden' if params[:q].present? %>">
       <% if has_archived || @pagy.count.nil? || @pagy.count > 0 || @template_folders.present? %>
@@ -18,7 +16,7 @@
           <%= render 'dashboard/toggle_view', selected: 'templates' %>
         </div>
       <% end %>
-      <h1 class="text-2xl truncate md:text-3xl sm:text-4xl font-bold md:block <%= 'hidden' if params[:q].present? %>">
+      <h1 class="text-xl truncate md:text-2xl font-semibold md:block <%= 'hidden' if params[:q].present? %>">
         <%= t('document_templates_html') %>
       </h1>
     </div>
@@ -31,14 +29,17 @@
           <%= render 'templates/upload_button' %>
         </span>
         <open-modal-mobile data-disabled="<%= !Docuseal.multitenant? %>" class="flex">
-          <%= link_to new_template_path, class: 'white-button !border gap-2', data: { turbo_frame: :modal } do %>
-            <%= svg_icon('plus', class: 'w-6 h-6 stroke-2') %>
+          <%= link_to new_template_path, class: 'white-button gap-1.5', data: { turbo_frame: :modal } do %>
+            <%= svg_icon('plus', class: 'w-4 h-4 stroke-2') %>
             <span class="hidden md:block"><%= t('create') %></span>
           <% end %>
         </open-modal-mobile>
       <% end %>
     </div>
   </div>
+  <% if show_dropzone %>
+    <%= render 'templates/dropzone' %>
+  <% end %>
   <% view_archived_html = capture do %>
     <% if has_archived %>
       <div>
@@ -65,7 +66,7 @@
   <% if @templates.present? %>
     <div class="grid gap-4 md:grid-cols-3">
       <%= render partial: 'templates/template', collection: @templates %>
-      <% if (show_dropzone && current_user.created_at > 2.weeks.ago && current_user == true_user) || params[:tour] == 'true' %>
+      <% if (current_user.created_at > 2.weeks.ago && current_user == true_user) || params[:tour] == 'true' %>
         <% user_config = current_user.user_configs.find_or_initialize_by(key: UserConfig::SHOW_APP_TOUR) %>
         <% if user_config.new_record? || user_config.value || params[:tour] == 'true' %>
           <div class="hidden md:block">
@@ -94,9 +95,6 @@
     </div>
   <% end %>
 </dashboard-dropzone>
-<% if show_dropzone %>
-  <%= render 'templates/dropzone' %>
-<% end %>
 <% if @templates.present? || @template_folders.present? || params[:q].blank? %>
   <% if @pagy.pages > 1 %>
     <%= render 'shared/pagination', pagy: @pagy, items_name: @templates.present? ? 'templates' : 'template_folders', left_additional_html: view_archived_html, right_additional_html: templates_order_select_html %>

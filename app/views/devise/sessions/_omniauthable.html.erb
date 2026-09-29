@@ -1,0 +1,5 @@
+<% if Saml.configured? %>
+  <div class="text-center mt-4">
+    <%= link_to 'Sign in with SSO', saml_path, class: 'link font-medium' %>
+  </div>
+<% end %>

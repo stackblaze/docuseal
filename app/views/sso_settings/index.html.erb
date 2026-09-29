@@ -2,7 +2,39 @@
   <%= render 'shared/settings_nav' %>
   <div class="flex-grow max-w-xl mx-auto">
     <h1 class="text-3xl md:text-4xl font-bold mb-4">SAML SSO</h1>
-    <%= render 'placeholder' %>
+    <p class="text-sm mb-4">
+      <%= t('single_sign_on_with_saml_2_0') %>. Use the URLs below in your identity provider. Name ID must be the user's email, and that email must already exist here.
+    </p>
+    <% value = @encrypted_config.value.is_a?(Hash) ? @encrypted_config.value : {} %>
+    <div class="space-y-4 mb-6">
+      <div class="form-control">
+        <label class="label">Single Sign-On URL</label>
+        <input type="text" readonly class="base-input" value="<%= saml_url %>">
+      </div>
+      <div class="form-control">
+        <label class="label">Metadata URL</label>
+        <input type="text" readonly class="base-input" value="<%= saml_metadata_url %>">
+      </div>
+    </div>
+    <%= form_for @encrypted_config, url: settings_sso_index_path, method: :post, html: { autocomplete: 'off', class: 'space-y-4' } do |f| %>
+      <%= f.fields_for :value do |ff| %>
+        <div class="form-control">
+          <%= ff.label :sso_url, 'SSO Service URL', class: 'label' %>
+          <%= ff.text_field :sso_url, value: value['sso_url'], class: 'base-input', placeholder: 'https://idp.example.com/sso' %>
+        </div>
+        <div class="form-control">
+          <%= ff.label :certificate, 'Certificate', class: 'label' %>
+          <%= ff.text_area :certificate, value: value['certificate'], class: 'base-textarea font-mono text-xs min-h-32', placeholder: "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----" %>
+        </div>
+      <% end %>
+      <label class="flex items-center justify-between gap-4 py-1">
+        <span class="text-[13px]"><%= t('force_sso_disable_login_with_email_and_password') %></span>
+        <%= check_box_tag :force_sso, '1', @force_sso, class: 'toggle toggle-sm' %>
+      </label>
+      <div class="form-control pt-2">
+        <%= f.button button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
+      </div>
+    <% end %>
   </div>
   <div class="w-0 md:w-52"></div>
 </div>

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+export PATH="${HOME}/.local/bin:${PATH}"
+eval "$(mise activate bash)"
+
+export PGHOST="${PGHOST:-localhost}"
+export PGPORT="${PGPORT:-5433}"
+export PGUSER="${PGUSER:-postgres}"
+export PGPASSWORD="${PGPASSWORD:-postgres}"
+
+exec bundle exec foreman start -f Procfile.dev

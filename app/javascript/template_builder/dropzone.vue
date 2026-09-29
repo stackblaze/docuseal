@@ -8,7 +8,7 @@
   >
     <label
       id="document_dropzone"
-      class="w-full relative rounded-md border-2 border-base-content/10 border-dashed"
+      class="w-full relative rounded-[10px] border border-base-300 border-dashed bg-white"
       :for="inputId"
       :class="{ 'opacity-50': isLoading, 'hover:bg-base-200/50': withHoverClass && !isDragEntering, 'bg-base-200/50 border-base-content/30': isDragEntering }"
     >
@@ -29,7 +29,7 @@
           />
           <div
             v-if="message"
-            class="text-lg mb-1"
+            class="text-[15px] mb-1"
             :class="{ 'mt-1': !withDescription, 'font-medium': withDescription }"
           >
             {{ message }}

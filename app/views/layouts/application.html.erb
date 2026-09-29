@@ -18,7 +18,7 @@
     <% end %>
     <%= stylesheet_pack_tag 'application', media: 'all' %>
   </head>
-  <body>
+  <body class="bg-base-100 text-base-content antialiased">
     <% if params[:modal].present? %>
       <% modal_uri = Addressable::URI.parse(params[:modal]) %>
       <% url_params = Rails.application.routes.recognize_path(modal_uri.path, method: :get) %>
@@ -28,11 +28,58 @@
     <% end %>
     <turbo-frame id="modal"></turbo-frame>
     <turbo-frame id="drawer"></turbo-frame>
-    <%= render 'shared/navbar' %>
-    <% if flash.present? %><%= render 'shared/flash' %><% end %>
-    <div class="max-w-6xl mx-auto px-4 md:px-2 mb-8">
-      <%= yield %>
-    </div>
+
+    <% if signed_in? %>
+      <%= render 'shared/navbar_warning' %>
+      <input type="checkbox" id="app-sidebar-open" class="hidden" />
+      <input type="checkbox" id="app-sidebar-collapsed" class="hidden" checked />
+      <label for="app-sidebar-open" class="app-sidebar-scrim" aria-hidden="true"></label>
+      <script>
+        (function () {
+          var box = document.getElementById('app-sidebar-collapsed');
+          if (!box) return;
+          try { box.checked = localStorage.getItem('docuseal-sidebar-collapsed') !== '0'; } catch (e) {}
+          box.addEventListener('change', function () {
+            try { localStorage.setItem('docuseal-sidebar-collapsed', box.checked ? '1' : '0'); } catch (e) {}
+          });
+        })();
+      </script>
+
+      <aside class="app-sidebar">
+        <%= render 'shared/sidebar' %>
+      </aside>
+
+      <div class="app-shell-main">
+        <header class="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-base-300 bg-base-100 px-4 md:px-6">
+          <label for="app-sidebar-open" class="app-sidebar-menu-btn btn btn-ghost btn-sm btn-square h-8 min-h-8 w-8 border border-base-300" aria-label="Open navigation">
+            <%= svg_icon('list', class: 'w-4 h-4') %>
+          </label>
+          <div class="min-w-0 flex-1">
+            <% if content_for?(:page_title) %>
+              <h1 class="truncate text-sm font-semibold leading-none"><%= yield :page_title %></h1>
+            <% end %>
+          </div>
+          <div class="flex shrink-0 items-center gap-1.5">
+            <%= render 'shared/navbar_buttons' %>
+          </div>
+        </header>
+
+        <% if flash.present? %><%= render 'shared/flash' %><% end %>
+
+        <main class="w-full px-4 py-4 md:px-6 mb-8">
+          <div class="max-w-6xl mx-auto">
+            <%= yield %>
+          </div>
+        </main>
+      </div>
+    <% else %>
+      <%= render 'shared/navbar' %>
+      <% if flash.present? %><%= render 'shared/flash' %><% end %>
+      <div class="max-w-6xl mx-auto px-4 md:px-2 mb-8">
+        <%= yield %>
+      </div>
+    <% end %>
+
     <%= render 'shared/body_scripts' %>
   </body>
 </html>

@@ -494,6 +494,9 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     ruby-progressbar (1.13.0)
+    ruby-saml (1.18.1)
+      nokogiri (>= 1.13.10)
+      rexml
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
@@ -637,6 +640,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
+  ruby-saml
   ruby-vips
   rubyzip
   shakapacker

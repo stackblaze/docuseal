@@ -26,7 +26,8 @@ class EncryptedConfig < ApplicationRecord
     EMAIL_SMTP_KEY = 'action_mailer_smtp',
     ESIGN_CERTS_KEY = 'esign_certs',
     TIMESTAMP_SERVER_URL_KEY = 'timestamp_server_url',
-    APP_URL_KEY = 'app_url'
+    APP_URL_KEY = 'app_url',
+    SAML_CONFIGS_KEY = 'saml_configs'
   ].freeze
 
   belongs_to :account
