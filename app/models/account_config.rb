@@ -28,6 +28,7 @@ class AccountConfig < ApplicationRecord
   SUBMITTER_DOCUMENTS_COPY_EMAIL_KEY = 'submitter_documents_copy_email'
   BCC_EMAILS = 'bcc_emails'
   FORCE_MFA = 'force_mfa'
+  MAGIC_LINK_LOGIN_KEY = 'magic_link_login'
   ALLOW_TYPED_SIGNATURE = 'allow_typed_signature'
   ALLOW_TO_RESUBMIT = 'allow_to_resubmit'
   ALLOW_TO_DECLINE_KEY = 'allow_to_decline'

@@ -27,7 +27,8 @@ class EncryptedConfig < ApplicationRecord
     ESIGN_CERTS_KEY = 'esign_certs',
     TIMESTAMP_SERVER_URL_KEY = 'timestamp_server_url',
     APP_URL_KEY = 'app_url',
-    SAML_CONFIGS_KEY = 'saml_configs'
+    SAML_CONFIGS_KEY = 'saml_configs',
+    OIDC_CONFIGS_KEY = 'oidc_configs'
   ].freeze
 
   belongs_to :account

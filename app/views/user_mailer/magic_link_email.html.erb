@@ -1,0 +1,7 @@
+<p><%= @user.first_name.present? ? t('hello_name', name: @user.first_name) : t('hi_there') %>,</p>
+<p>Use the link below to sign in to <%= @current_account.name %>. It works once and expires in 15 minutes.</p>
+<p><%= link_to t('sign_in'), @url %></p>
+<p>If you didn't ask to sign in, you can ignore this email.</p>
+<p>
+  <%= t('thanks') %>,<br><%= @current_account.name %>
+</p>

@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
 class SessionsController < Devise::SessionsController
+  # Runs ahead of Devise's allow_params_authentication!, which would otherwise let any
+  # current_user lookup in this request sign the user in with the posted password.
+  prepend_before_action :reject_password_sign_in_when_sso_forced, only: :create
   before_action :configure_permitted_parameters
 
   around_action :with_browser_locale
 
   def create
-    if Saml.forced?
-      redirect_to saml_path, alert: I18n.t('force_sso_disable_login_with_email_and_password')
-      return
-    end
-
     email = sign_in_params[:email].to_s.downcase
 
     if Docuseal.multitenant? && !User.exists?(email:)
@@ -28,6 +26,12 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  def reject_password_sign_in_when_sso_forced
+    return unless SsoLogin.forced?
+
+    redirect_to new_user_session_path, alert: I18n.t('force_sso_disable_login_with_email_and_password')
+  end
 
   def after_sign_in_path_for(...)
     if params[:redir].present?

@@ -1,40 +1,107 @@
 <div class="flex flex-wrap space-y-4 md:flex-nowrap md:space-y-0">
   <%= render 'shared/settings_nav' %>
-  <div class="flex-grow max-w-xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-bold mb-4">SAML SSO</h1>
-    <p class="text-sm mb-4">
-      <%= t('single_sign_on_with_saml_2_0') %>. Use the URLs below in your identity provider. Name ID must be the user's email, and that email must already exist here.
-    </p>
-    <% value = @encrypted_config.value.is_a?(Hash) ? @encrypted_config.value : {} %>
-    <div class="space-y-4 mb-6">
-      <div class="form-control">
-        <label class="label">Single Sign-On URL</label>
-        <input type="text" readonly class="base-input" value="<%= saml_url %>">
-      </div>
-      <div class="form-control">
-        <label class="label">Metadata URL</label>
-        <input type="text" readonly class="base-input" value="<%= saml_metadata_url %>">
-      </div>
-    </div>
-    <%= form_for @encrypted_config, url: settings_sso_index_path, method: :post, html: { autocomplete: 'off', class: 'space-y-4' } do |f| %>
-      <%= f.fields_for :value do |ff| %>
-        <div class="form-control">
-          <%= ff.label :sso_url, 'SSO Service URL', class: 'label' %>
-          <%= ff.text_field :sso_url, value: value['sso_url'], class: 'base-input', placeholder: 'https://idp.example.com/sso' %>
-        </div>
-        <div class="form-control">
-          <%= ff.label :certificate, 'Certificate', class: 'label' %>
-          <%= ff.text_area :certificate, value: value['certificate'], class: 'base-textarea font-mono text-xs min-h-32', placeholder: "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----" %>
+  <div class="flex-grow max-w-xl mx-auto space-y-10">
+    <h1 class="text-3xl md:text-4xl font-bold">SSO</h1>
+
+    <section>
+      <h2 class="text-xl font-semibold mb-2">Sign-in options</h2>
+      <%= form_with url: magic_link_settings_sso_index_path, method: :post, class: 'space-y-3' do |f| %>
+        <label class="flex items-center justify-between gap-4 py-1">
+          <span class="text-[13px]">
+            Email sign-in links
+            <span class="block text-base-content/60">Users can request a single-use link that expires in 15 minutes. Two-factor codes are still required. Needs working email settings.</span>
+          </span>
+          <%= check_box_tag :magic_link_enabled, '1', @magic_link_enabled, class: 'toggle toggle-sm' %>
+        </label>
+        <label class="flex items-center justify-between gap-4 py-1">
+          <span class="text-[13px]">
+            <%= t('force_sso_disable_login_with_email_and_password') %>
+            <span class="block text-base-content/60">Applies once SAML or an OpenID Connect provider is configured. Also disables email sign-in links.</span>
+          </span>
+          <%= check_box_tag :force_sso, '1', @force_sso, class: 'toggle toggle-sm' %>
+        </label>
+        <div class="form-control pt-2">
+          <%= f.button button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
         </div>
       <% end %>
-      <label class="flex items-center justify-between gap-4 py-1">
-        <span class="text-[13px]"><%= t('force_sso_disable_login_with_email_and_password') %></span>
-        <%= check_box_tag :force_sso, '1', @force_sso, class: 'toggle toggle-sm' %>
-      </label>
-      <div class="form-control pt-2">
-        <%= f.button button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold mb-2">Google, Microsoft, and Okta</h2>
+      <p class="text-sm mb-4">
+        OpenID Connect sign-in. Register an app with each provider and add its redirect URI. The provider's verified email must match an existing user here.
+      </p>
+      <%= form_with url: oidc_settings_sso_index_path, method: :post, html: { autocomplete: 'off' }, class: 'space-y-8' do |f| %>
+        <% OidcSso::PROVIDERS.each do |provider, meta| %>
+          <% config = @oidc_configs[provider] || {} %>
+          <div class="space-y-3">
+            <label class="flex items-center justify-between gap-4">
+              <span class="font-semibold"><%= meta[:name] %></span>
+              <%= check_box_tag "oidc[#{provider}][enabled]", '1', config['enabled'], class: 'toggle toggle-sm' %>
+            </label>
+            <div class="form-control">
+              <label class="label">Redirect URI</label>
+              <input type="text" readonly class="base-input" value="<%= oidc_callback_url(provider) %>">
+            </div>
+            <% if provider == 'microsoft' %>
+              <div class="form-control">
+                <%= label_tag "oidc_#{provider}_tenant", 'Directory (tenant) ID', class: 'label' %>
+                <%= text_field_tag "oidc[#{provider}][tenant]", config['tenant'], id: "oidc_#{provider}_tenant", autocomplete: 'off', class: 'base-input', placeholder: '00000000-0000-0000-0000-000000000000' %>
+              </div>
+            <% elsif provider == 'okta' %>
+              <div class="form-control">
+                <%= label_tag "oidc_#{provider}_domain", 'Okta domain or issuer URL', class: 'label' %>
+                <%= text_field_tag "oidc[#{provider}][domain]", config['domain'], id: "oidc_#{provider}_domain", autocomplete: 'off', class: 'base-input', placeholder: 'your-org.okta.com' %>
+              </div>
+            <% end %>
+            <div class="form-control">
+              <%= label_tag "oidc_#{provider}_client_id", 'Client ID', class: 'label' %>
+              <%= text_field_tag "oidc[#{provider}][client_id]", config['client_id'], id: "oidc_#{provider}_client_id", autocomplete: 'off', class: 'base-input' %>
+            </div>
+            <div class="form-control">
+              <%= label_tag "oidc_#{provider}_client_secret", 'Client secret', class: 'label' %>
+              <%= password_field_tag "oidc[#{provider}][client_secret]", nil, id: "oidc_#{provider}_client_secret", autocomplete: 'new-password', class: 'base-input', placeholder: config['client_secret'].present? ? 'Saved. Leave blank to keep it.' : '' %>
+            </div>
+          </div>
+        <% end %>
+        <div class="form-control">
+          <%= f.button button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
+        </div>
+      <% end %>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold mb-2">SAML</h2>
+      <p class="text-sm mb-4">
+        <%= t('single_sign_on_with_saml_2_0') %>. Use the URLs below in your identity provider. Name ID must be the user's email, and that email must already exist here.
+      </p>
+      <% value = @encrypted_config.value.is_a?(Hash) ? @encrypted_config.value : {} %>
+      <div class="space-y-4 mb-6">
+        <div class="form-control">
+          <label class="label">Single Sign-On URL</label>
+          <input type="text" readonly autocomplete="off" class="base-input" value="<%= saml_url %>">
+        </div>
+        <div class="form-control">
+          <label class="label">Metadata URL</label>
+          <input type="text" readonly autocomplete="off" class="base-input" value="<%= saml_metadata_url %>">
+        </div>
       </div>
-    <% end %>
+      <%= form_for @encrypted_config, url: settings_sso_index_path, method: :post, html: { autocomplete: 'off', class: 'space-y-4' } do |f| %>
+        <%= f.fields_for :value do |ff| %>
+          <div class="form-control">
+            <%= ff.label :sso_url, 'SSO Service URL', class: 'label' %>
+            <%= ff.text_field :sso_url, value: value['sso_url'], class: 'base-input', placeholder: 'https://idp.example.com/sso' %>
+          </div>
+          <div class="form-control">
+            <%= ff.label :certificate, 'Certificate', class: 'label' %>
+            <%= ff.text_area :certificate, value: value['certificate'], class: 'base-textarea font-mono text-xs min-h-32', placeholder: "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----" %>
+          </div>
+        <% end %>
+        <div class="form-control pt-2">
+          <%= f.button button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
+        </div>
+      <% end %>
+    </section>
   </div>
   <div class="w-0 md:w-52"></div>
 </div>
