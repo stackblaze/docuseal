@@ -41,7 +41,7 @@
             </label>
             <div class="form-control">
               <label class="label">Redirect URI</label>
-              <input type="text" readonly class="base-input" value="<%= oidc_callback_url(provider) %>">
+              <input type="text" readonly autocomplete="off" class="base-input" value="<%= oidc_callback_url(provider) %>">
             </div>
             <% if provider == 'microsoft' %>
               <div class="form-control">
