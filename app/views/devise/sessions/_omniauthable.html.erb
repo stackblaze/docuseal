@@ -1,5 +1,16 @@
-<% if Saml.configured? %>
+<% oidc_providers = OidcSso.enabled_providers %>
+<% if Saml.configured? || oidc_providers.any? %>
+  <div class="space-y-3 mt-6">
+    <% oidc_providers.each do |provider| %>
+      <%= link_to "Sign in with #{OidcSso.display_name(provider)}", oidc_login_path(provider), class: 'base-button w-full', data: { turbo: false } %>
+    <% end %>
+    <% if Saml.configured? %>
+      <%= link_to 'Sign in with SAML SSO', saml_path, class: 'base-button w-full', data: { turbo: false } %>
+    <% end %>
+  </div>
+<% end %>
+<% if MagicLink.enabled? && !SsoLogin.forced? %>
   <div class="text-center mt-4">
-    <%= link_to 'Sign in with SSO', saml_path, class: 'link font-medium' %>
+    <%= link_to 'Email me a sign-in link', new_magic_link_path, class: 'link font-medium' %>
   </div>
 <% end %>

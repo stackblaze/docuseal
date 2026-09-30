@@ -1,0 +1,16 @@
+<div class="max-w-lg mx-auto px-2">
+  <h1 class="text-4xl font-bold text-center mt-8"><%= t('sign_in') %></h1>
+  <p class="text-center mt-4 text-base-content/70">We'll email you a link that signs you in without a password.</p>
+  <%= form_with url: magic_links_path, method: :post, class: 'space-y-6 mt-8' do |f| %>
+    <div class="form-control">
+      <%= f.label :email, t(:email), class: 'label' %>
+      <%= f.email_field :email, value: params[:email], autofocus: true, autocomplete: 'email', required: true, class: 'base-input' %>
+    </div>
+    <div class="form-control">
+      <%= f.button button_title(title: 'Email me a sign-in link', disabled_with: t('submitting')), class: 'base-button' %>
+    </div>
+  <% end %>
+  <div class="text-center mt-4">
+    <%= link_to 'Sign in with a password instead', new_user_session_path, class: 'link link-hover' %>
+  </div>
+</div>

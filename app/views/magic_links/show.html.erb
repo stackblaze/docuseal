@@ -1,0 +1,16 @@
+<div class="max-w-lg mx-auto px-2">
+  <h1 class="text-4xl font-bold text-center mt-8"><%= t('sign_in') %></h1>
+  <p class="text-center mt-4 text-base-content/70">Continue as <strong><%= @user.email %></strong></p>
+  <%= form_with url: consume_magic_link_path, method: :post, class: 'space-y-6 mt-8' do |f| %>
+    <%= hidden_field_tag :token, @token %>
+    <% if @user.otp_required_for_login %>
+      <div class="form-control">
+        <%= label_tag :otp_attempt, t('two_factor_code_from_authenticator_app', default: 'Two-factor code'), class: 'label' %>
+        <%= text_field_tag :otp_attempt, nil, autofocus: true, required: true, autocomplete: 'one-time-code', inputmode: 'numeric', class: 'base-input' %>
+      </div>
+    <% end %>
+    <div class="form-control">
+      <%= f.button button_title(title: t('sign_in'), disabled_with: t('signing_in')), class: 'base-button' %>
+    </div>
+  <% end %>
+</div>

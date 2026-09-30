@@ -77,6 +77,13 @@ Rails.application.routes.draw do
   resources :submitters, only: %i[edit update]
   match '/sso/saml', to: 'saml#consume', via: %i[get post], as: :saml
   get '/sso/saml/metadata', to: 'saml#metadata', as: :saml_metadata
+  get '/sso/oidc/:provider', to: 'oidc#show', as: :oidc_login, constraints: { provider: /google|microsoft|okta/ }
+  get '/sso/oidc/:provider/callback', to: 'oidc#callback', as: :oidc_callback,
+                                      constraints: { provider: /google|microsoft|okta/ }
+  get '/sign_in/link', to: 'magic_links#new', as: :new_magic_link
+  post '/sign_in/link', to: 'magic_links#create', as: :magic_links
+  get '/sign_in/link/open', to: 'magic_links#show', as: :magic_link
+  post '/sign_in/link/open', to: 'magic_links#consume', as: :consume_magic_link
 
   resources :console_redirect, only: %i[index]
   resources :upgrade, only: %i[index], controller: 'console_redirect'
@@ -199,7 +206,12 @@ Rails.application.routes.draw do
       resource :reveal_access_token, only: %i[show create], controller: 'reveal_access_token'
     end
     resources :email, only: %i[index create destroy], controller: 'email_smtp_settings'
-    resources :sso, only: %i[index create], controller: 'sso_settings'
+    resources :sso, only: %i[index create], controller: 'sso_settings' do
+      collection do
+        post :oidc, action: :update_oidc
+        post :magic_link, action: :update_magic_link
+      end
+    end
     resources :console, only: %i[index], controller: 'console_settings'
     resources :notifications, only: %i[index create], controller: 'notifications_settings'
     resource :esign, only: %i[show create new update destroy], controller: 'esign_settings'
